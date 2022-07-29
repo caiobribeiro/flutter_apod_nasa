@@ -5,6 +5,11 @@ import 'package:flutter_apod_nasa/app/modules/home/home_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../responsive/responsive_layout.dart';
+import 'devices_views/home_page_desktop.dart';
+import 'devices_views/home_page_mobile.dart';
+import 'devices_views/home_page_tablet.dart';
+
 class HomePage extends StatefulWidget {
   final String title;
   const HomePage({Key? key, this.title = "Home"}) : super(key: key);
@@ -18,21 +23,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Counter'),
-      ),
-      body: Observer(
-        builder: (context) => Text('${store.counter}'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          store.increment();
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+    return Observer(builder: (_) {
+      return const ResponsiveLayout(
+        mobileBody: HomePageMobile(),
+        tabletBody: HomePageTablet(),
+        desktopBody: HomePageDesktop(),
+      );
+    });
   }
 }
-
-class AppStore {}
