@@ -15,6 +15,12 @@ class _AppWidgetState extends State<AppWidget> {
   final AppStore store = Modular.get<AppStore>();
 
   @override
+  void initState() {
+    store.checkIfUpdateContetnt();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {

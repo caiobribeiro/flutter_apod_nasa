@@ -1,7 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
@@ -21,7 +20,7 @@ class NasaApodModel extends HiveObject {
     @required this.serviceVersion,
     @required this.title,
     @required this.url,
-    this.imageFile,
+    @required this.imageFile,
   });
 
   @HiveField(0)
@@ -39,7 +38,7 @@ class NasaApodModel extends HiveObject {
   @HiveField(6)
   final String? url;
   @HiveField(7)
-  final File? imageFile;
+  final Uint8List? imageFile;
 
   factory NasaApodModel.fromJson(Map<String, dynamic> json) => NasaApodModel(
         copyright: json["copyright"],
@@ -49,5 +48,6 @@ class NasaApodModel extends HiveObject {
         serviceVersion: json["service_version"],
         title: json["title"],
         url: json["url"],
+        imageFile: json["imageFile"],
       );
 }

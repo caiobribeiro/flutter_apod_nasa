@@ -24,7 +24,7 @@ class NasaApodModelAdapter extends TypeAdapter<NasaApodModel> {
       serviceVersion: fields[4] as String?,
       title: fields[5] as String?,
       url: fields[6] as String?,
-      imageFile: fields[7] as File?,
+      imageFile: fields[7] as Uint8List?,
     );
   }
 

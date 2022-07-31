@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, prefer_interpolation_to_compose_strings
 
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
