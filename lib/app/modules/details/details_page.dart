@@ -10,11 +10,13 @@ import 'devices_views/detailsPage_page_tablet.dart';
 class DetailsPage extends StatefulWidget {
   final String title;
   final DateTime date;
-  const DetailsPage({
-    Key? key,
-    this.title = 'DetailsPagePage',
-    required this.date,
-  }) : super(key: key);
+  final int dbIndex;
+  const DetailsPage(
+      {Key? key,
+      this.title = 'DetailsPagePage',
+      required this.date,
+      required this.dbIndex})
+      : super(key: key);
   @override
   DetailsPagePageState createState() => DetailsPagePageState();
 }
@@ -27,12 +29,15 @@ class DetailsPagePageState extends State<DetailsPage> {
       return ResponsiveLayout(
         mobileBody: DetailsPageMobile(
           date: widget.date,
+          dbIndex: widget.dbIndex,
         ),
         tabletBody: DetailsPageTablet(
           date: widget.date,
+          dbIndex: widget.dbIndex,
         ),
         desktopBody: DetailsPageDesktop(
           date: widget.date,
+          dbIndex: widget.dbIndex,
         ),
       );
     });

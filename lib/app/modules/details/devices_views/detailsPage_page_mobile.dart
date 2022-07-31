@@ -8,11 +8,13 @@ import '../details_store.dart';
 class DetailsPageMobile extends StatefulWidget {
   final String title;
   final DateTime date;
-  const DetailsPageMobile({
-    Key? key,
-    this.title = 'DetailsPageMobile',
-    required this.date,
-  }) : super(key: key);
+  final int dbIndex;
+  const DetailsPageMobile(
+      {Key? key,
+      this.title = 'DetailsPageMobile',
+      required this.date,
+      required this.dbIndex})
+      : super(key: key);
   @override
   DetailsPageState createState() => DetailsPageState();
 }

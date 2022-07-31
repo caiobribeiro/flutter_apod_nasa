@@ -1,11 +1,9 @@
-import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'api_key/api_key.dart';
 import 'hive/boxes.dart';
 import 'models/nasa_apod_model.dart';
@@ -20,13 +18,55 @@ abstract class AppStoreBase with Store {
   @observable
   List<Uint8List> listImageFiles = [];
 
+  @observable
+  bool isConnected = true;
+
   @action
-  Future<List<NasaApodModel>> downloadApodData() async {
+  checkIfUpdateContetnt() async {
+    checkNetworkStatus();
+    if (isConnected == true) {
+      final box = Boxes.getNasaApodModel();
+      var lastUpdated = box.values.toList().cast<NasaApodModel>();
+      if (lastUpdated.isEmpty) {
+        updateContent();
+      } else if (daysBetweenDiference(DateTime.now(), lastUpdated[0].date!) >
+          0) {
+        updateContent();
+      }
+    }
+  }
+
+  @action
+  int daysBetweenDiference(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
+  @action
+  checkNetworkStatus() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return isConnected = true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return isConnected = true;
+    } else {
+      return isConnected = false;
+    }
+  }
+
+  @action
+  Future cleanDatabase() async {
+    final box = Boxes.getNasaApodModel();
+    box.clear();
+  }
+
+  @action
+  Future updateContent() async {
     var apodFormatDate = DateFormat("yyyy-MM-dd");
     String parsedStartDate = apodFormatDate.format(DateTime.now());
     String parsedEndDate =
-        apodFormatDate.format(DateTime.now().add(const Duration(days: -30)));
-    final appStorage = await getApplicationDocumentsDirectory();
+        apodFormatDate.format(DateTime.now().add(const Duration(days: -10)));
 
     try {
       var response = await Dio().get(
@@ -41,23 +81,9 @@ abstract class AppStoreBase with Store {
       final list = response.data as List;
       final apodListParsed =
           list.map((e) => NasaApodModel.fromJson(e)).toList();
+      checkNetworkStatus();
 
-      downloadImageFile(apodListParsed);
-
-      // for (var i = 0; i < apodListParsed.length; i++) {
-      //   // final file = File('${appStorage.path}/$apodListParsed[i].date');
-      //   addApodList(
-      //     apodListParsed[i].copyright,
-      //     apodListParsed[i].date,
-      //     apodListParsed[i].explanation,
-      //     apodListParsed[i].mediaType,
-      //     apodListParsed[i].serviceVersion,
-      //     apodListParsed[i].title,
-      //     apodListParsed[i].url,
-      //     // file,
-      //   );
-      // }
-      return apodListParsed;
+      return downloadImageFile(apodListParsed);
     } catch (e) {
       throw Exception(e);
     }
@@ -65,9 +91,7 @@ abstract class AppStoreBase with Store {
 
   @action
   Future downloadImageFile(List<NasaApodModel> apodListParsed) async {
-    final appStorage = await getApplicationDocumentsDirectory();
     for (var i = 0; i < apodListParsed.length; i++) {
-      final file = File('${appStorage.path}/$apodListParsed[i].url');
       try {
         var response = await Dio().get(
           // ignore: prefer_interpolation_to_compose_strings
@@ -78,21 +102,27 @@ abstract class AppStoreBase with Store {
             receiveTimeout: 0,
           ),
         );
-        print(response.data.runtimeType);
-        print(response.data);
-        // final raf = file.openSync(mode: FileMode.write);
-        // raf.writeByteSync(response.data);
+
         listImageFiles.add(response.data);
-        // await raf.close();
       } catch (e) {
         throw Exception(e);
       }
+      addApodListToHive(
+        apodListParsed[i].copyright,
+        apodListParsed[i].date,
+        apodListParsed[i].explanation,
+        apodListParsed[i].mediaType,
+        apodListParsed[i].serviceVersion,
+        apodListParsed[i].title,
+        apodListParsed[i].url,
+        listImageFiles[i],
+      );
     }
   }
 }
 
 @action
-Future addApodList(
+Future addApodListToHive(
   String? copyright,
   DateTime? date,
   String? explanation,
@@ -100,18 +130,20 @@ Future addApodList(
   String? serviceVersion,
   String? title,
   String? url,
-  // File? imageFile,
+  Uint8List? imageFile,
 ) async {
-  final apod = NasaApodModel(
-    title: title,
-    copyright: copyright,
-    date: date,
-    explanation: explanation,
-    mediaType: mediaType,
-    serviceVersion: serviceVersion,
-    url: url,
-  );
-
-  final box = Boxes.getNasaApodModel();
-  box.add(apod);
+  if (mediaType == 'image') {
+    final apod = NasaApodModel(
+      title: title,
+      copyright: copyright,
+      date: date,
+      explanation: explanation,
+      mediaType: mediaType,
+      serviceVersion: serviceVersion,
+      url: url,
+      imageFile: imageFile,
+    );
+    final box = Boxes.getNasaApodModel();
+    box.add(apod);
+  }
 }

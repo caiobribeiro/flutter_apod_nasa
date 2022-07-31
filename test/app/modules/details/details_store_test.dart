@@ -13,8 +13,7 @@ void main() {
       () async {
     expect(store.serachDate.runtimeType, equals(DateTime.now().runtimeType));
     store.fetchNasaApodAPIWithDateParam(DateTime.now());
-    var apod_fetched =
-        await store.fetchNasaApodAPIWithDateParam(DateTime.now());
-    expect(apod_fetched.runtimeType, equals(NasaApodModel));
+    var apodFetched = await store.fetchNasaApodAPIWithDateParam(DateTime.now());
+    expect(apodFetched.runtimeType, equals(NasaApodModel));
   });
 }

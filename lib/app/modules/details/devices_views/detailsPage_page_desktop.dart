@@ -8,11 +8,13 @@ import '../details_store.dart';
 class DetailsPageDesktop extends StatefulWidget {
   final String title;
   final DateTime date;
-  const DetailsPageDesktop({
-    Key? key,
-    this.title = 'DetailsPageDesktop',
-    required this.date,
-  }) : super(key: key);
+  final int dbIndex;
+  const DetailsPageDesktop(
+      {Key? key,
+      this.title = 'DetailsPageDesktop',
+      required this.date,
+      required this.dbIndex})
+      : super(key: key);
   @override
   DetailsPagePageState createState() => DetailsPagePageState();
 }

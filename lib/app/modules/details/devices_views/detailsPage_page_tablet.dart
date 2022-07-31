@@ -8,11 +8,13 @@ import '../details_store.dart';
 class DetailsPageTablet extends StatefulWidget {
   final String title;
   final DateTime date;
-  const DetailsPageTablet({
-    Key? key,
-    this.title = 'DetailsPageTablet',
-    required this.date,
-  }) : super(key: key);
+  final int dbIndex;
+  const DetailsPageTablet(
+      {Key? key,
+      this.title = 'DetailsPageTablet',
+      required this.date,
+      required this.dbIndex})
+      : super(key: key);
   @override
   DetailsPageState createState() => DetailsPageState();
 }
