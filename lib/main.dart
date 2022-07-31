@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'app/app_module.dart';
 import 'app/app_widget.dart';
+import 'app/models/nasa_apod_model.dart';
 
-void main() =>
-    runApp(ModularApp(module: AppModule(), child: const AppWidget()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(NasaApodModelAdapter());
+  await Hive.openBox<NasaApodModel>('nasaApodList');
+  runApp(ModularApp(module: AppModule(), child: const AppWidget()));
+}

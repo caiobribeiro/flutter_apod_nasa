@@ -13,9 +13,8 @@ void main() {
       () async {
     expect(store.serachDate.runtimeType, equals(DateTime.now().runtimeType));
     store.fetchNasaApodAPIWithDateParam(DateTime.now());
-    var apod_fetched =
-        await store.fetchNasaApodAPIWithDateParam(DateTime.now());
-    expect(apod_fetched.runtimeType, equals(NasaApodModel));
+    var apodFetched = await store.fetchNasaApodAPIWithDateParam(DateTime.now());
+    expect(apodFetched.runtimeType, equals(NasaApodModel));
   });
 
   test('Fetch data from Apod API by range is returning a NasaApodModel',
@@ -25,11 +24,10 @@ void main() {
     expect(
         store.selectedEndDate.runtimeType, equals(DateTime.now().runtimeType));
     var now = DateTime.now();
-    store.fetchNasaApodAPIWithDateRangeParam(
-        DateTime(now.year, now.month, now.day - 1), now);
-    var apod_fetched =
-        await store.fetchNasaApodAPIWithDateParam(DateTime.now());
 
-    expect(apod_fetched.runtimeType, equals(NasaApodModel));
+    var apodFetched = await store.fetchNasaApodAPIWithDateRangeParam(
+        DateTime(now.year, now.month, now.day - 1), now);
+
+    expect(apodFetched.runtimeType, equals(List<NasaApodModel>));
   });
 }

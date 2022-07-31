@@ -2,8 +2,6 @@ import 'package:flutter_apod_nasa/app/models/nasa_apod_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  late NasaApodModel model;
-
   test('Apod model variables types are correct', () async {
     final model = NasaApodModel(
         mediaType: '',
