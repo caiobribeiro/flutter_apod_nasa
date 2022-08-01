@@ -16,6 +16,7 @@ class _AppWidgetState extends State<AppWidget> {
 
   @override
   void initState() {
+    store.loadTheme();
     store.checkIfUpdateContetnt();
     super.initState();
   }
@@ -27,6 +28,7 @@ class _AppWidgetState extends State<AppWidget> {
         return MaterialApp.router(
           title: 'Flutter APOD Nasa',
           scrollBehavior: AppScrollBehavior(),
+          theme: store.currentTheme,
           routeInformationParser: Modular.routeInformationParser,
           routerDelegate: Modular.routerDelegate,
           debugShowCheckedModeBanner: false,

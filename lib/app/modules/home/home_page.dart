@@ -22,19 +22,19 @@ class _HomePageState extends State<HomePage> {
   final HomeStore store = Modular.get<HomeStore>();
 
   @override
-  void initState() {
-    // store.checkNetworkStatus();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return const ResponsiveLayout(
-        mobileBody: HomePageMobile(),
-        tabletBody: HomePageTablet(),
-        desktopBody: HomePageDesktop(),
-      );
-    });
+    return FutureBuilder(
+      future: store.checkNetworkStatus(),
+      builder: ((context, snapshot) => Observer(builder: (_) {
+            if (snapshot.hasData) {
+              return const ResponsiveLayout(
+                mobileBody: HomePageMobile(),
+                tabletBody: HomePageTablet(),
+                desktopBody: HomePageDesktop(),
+              );
+            }
+            return const CircularProgressIndicator();
+          })),
+    );
   }
 }

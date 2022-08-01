@@ -9,6 +9,11 @@ void main() {
     store = HomeStore();
   });
 
+  test('Is device connected to the internet', () async {
+    var test = await store.checkNetworkStatus();
+    expect(store.checkNetworkStatus().runtimeType, equals(test));
+  });
+
   test('Fetch data from Apod API by day is returning a NasaApodModel',
       () async {
     expect(store.serachDate.runtimeType, equals(DateTime.now().runtimeType));

@@ -57,6 +57,22 @@ mixin _$HomeStore on HomeStoreBase, Store {
     });
   }
 
+  late final _$isConnectedAtom =
+      Atom(name: 'HomeStoreBase.isConnected', context: context);
+
+  @override
+  bool? get isConnected {
+    _$isConnectedAtom.reportRead();
+    return super.isConnected;
+  }
+
+  @override
+  set isConnected(bool? value) {
+    _$isConnectedAtom.reportWrite(value, super.isConnected, () {
+      super.isConnected = value;
+    });
+  }
+
   late final _$fetchNasaApodAPIWithDateParamAsyncAction = AsyncAction(
       'HomeStoreBase.fetchNasaApodAPIWithDateParam',
       context: context);
@@ -78,6 +94,15 @@ mixin _$HomeStore on HomeStoreBase, Store {
         () => super.fetchNasaApodAPIWithDateRangeParam(startDate, endDate));
   }
 
+  late final _$checkNetworkStatusAsyncAction =
+      AsyncAction('HomeStoreBase.checkNetworkStatus', context: context);
+
+  @override
+  Future<bool> checkNetworkStatus() {
+    return _$checkNetworkStatusAsyncAction
+        .run(() => super.checkNetworkStatus());
+  }
+
   late final _$HomeStoreBaseActionController =
       ActionController(name: 'HomeStoreBase', context: context);
 
@@ -97,7 +122,8 @@ mixin _$HomeStore on HomeStoreBase, Store {
     return '''
 selectedStartDate: ${selectedStartDate},
 selectedEndDate: ${selectedEndDate},
-serachDate: ${serachDate}
+serachDate: ${serachDate},
+isConnected: ${isConnected}
     ''';
   }
 }

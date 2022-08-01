@@ -2,95 +2,104 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_apod_nasa/app/app_store.dart';
+import 'package:flutter_apod_nasa/app/modules/home/home_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-// ignore: unnecessary_import
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../hive/boxes.dart';
 import '../../../models/nasa_apod_model.dart';
+import '../../../widgets/apod_card_list_view_widget.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/glass_box_effect.dart';
+import '../../../widgets/media_widget.dart';
+import '../../../widgets/search_bar_widget.dart';
 
 class HomePageMobile extends StatefulWidget {
   final String title;
-  final String? connectionStatus;
-  const HomePageMobile({Key? key, this.title = "Home", this.connectionStatus})
-      : super(key: key);
+  const HomePageMobile({
+    Key? key,
+    this.title = "Home",
+  }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePageMobile> {
-  final AppStore store = Modular.get<AppStore>();
-  AppBar appBar = AppBar(
-    title: const Text("AppBar"),
-  );
+  final HomeStore store = Modular.get<HomeStore>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar,
-        body: Observer(builder: (_) {
-          return Center(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () => store.updateContent(),
-                      child: const Text("Select date"),
-                    ),
-                    OutlinedButton(
-                      onPressed: () => store.cleanDatabase(),
-                      child: const Text("limpar"),
-                    ),
-                  ],
-                ),
-                ValueListenableBuilder<Box<NasaApodModel>>(
+      appBar: const CustomAppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child:
+            // ONLINE
+            store.isConnected == true
+                ? FutureBuilder<NasaApodModel>(
+                    future: store.fetchNasaApodAPIWithDateParam(DateTime.now()),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Stack(
+                          children: [
+                            Column(
+                              children: [
+                                Media(
+                                  midiaType: snapshot.data!.mediaType!,
+                                  url: snapshot.data!.url!,
+                                  isConnected: true,
+                                ),
+                              ],
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 200),
+                              child: GlassBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: SingleChildScrollView(
+                                  controller: ScrollController(),
+                                  child: Column(
+                                    children: const [
+                                      SearchBar(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  )
+                // OFFLINE
+                : ValueListenableBuilder<Box<NasaApodModel>>(
                     valueListenable: Boxes.getNasaApodModel().listenable(),
                     builder: ((context, box, _) {
                       final nasaApodModelList =
                           box.values.toList().cast<NasaApodModel>();
-                      return Column(
+                      return Stack(
                         children: [
-                          Column(
-                            children: [
-                              Text("${nasaApodModelList.runtimeType}"),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height - 200,
-                                child: ListView.builder(
-                                    itemCount: nasaApodModelList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return ListTile(
-                                        leading: ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            maxWidth: 64,
-                                            maxHeight: 64,
-                                          ),
-                                          child: Image.memory(
-                                              nasaApodModelList[index]
-                                                  .imageFile!),
-                                        ),
-                                        trailing: Text(
-                                          "${nasaApodModelList[index].date}",
-                                        ),
-                                        title: Text(
-                                          "${nasaApodModelList[index].title}",
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ],
+                          Media(
+                            midiaType: nasaApodModelList[0].mediaType!,
+                            url: nasaApodModelList[0].url!,
+                            dbIndex: 0,
                           ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 200),
+                            child: GlassBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: ApodCardListViewWidget(),
+                            ),
+                          )
                         ],
                       );
-                    }))
-              ],
-            ),
-          );
-        }));
+                    }),
+                  ),
+      ),
+    );
   }
 }
