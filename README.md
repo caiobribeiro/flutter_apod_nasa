@@ -20,7 +20,7 @@ Developed in [Flutter]
 
 | Desktop | Mobile | Tablet |
 | ------ | ------ | ------ |
-| ![desktop_walkthrough](readme_assets\flutter_apod_nasa_oInmLRmGla.gif) | ![mobile_walkthrough](readme_assets\flutter_apod_nasa_6ikDp79gC3.gif) | ![tablet_walkthrough](readme_assets\flutter_apod_nasa_OSwM2J6hqe.gif) |
+| ![desktop_walkthrough](readme_assets\flutter_apod_nasa_VKt8tpMrNK.gif) | ![mobile_walkthrough](readme_assets\flutter_apod_nasa_coXdL8tR7b.gif) | ![tablet_walkthrough](readme_assets\flutter_apod_nasa_EF7mOtLAhv.gif) |
 
 ## Packages
 Packages from The official package repository for Dart and Flutter apps.
@@ -35,11 +35,18 @@ Packages from The official package repository for Dart and Flutter apps.
 - [Internet Connection Checker].
 
 
+## API Key
+Go to [API Nasa] and click Generate API Key.
+
+Update the api_key.dart with the new generated key.
+
+Path: lib\app\api_key\api_key.dart
 
 
-
-
-
+```sh
+const String apiKey =
+    'https://api.nasa.gov/planetary/apod?api_key=api_key_from_apod_nasa';
+```
 
 
 
@@ -59,6 +66,7 @@ flutter run
 
 
 ## ⚠️ Running ⚠️
+
 For running on web version is important to fallow 2 steps:
 
 1 - Anable Hive to run on web.
@@ -109,5 +117,6 @@ MIT
 [Internet Connection Checker]: <https://pub.dev/packages/internet_connection_checker/>
 [Youtube Player Flutter]: <https://pub.dev/packages/youtube_player_flutter/>
 [Material Theme Builder]: <https://m3.material.io/theme-builder#/dynamic/>
+[API Nasa]: <https://api.nasa.gov//>
 
 
