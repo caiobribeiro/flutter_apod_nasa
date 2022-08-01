@@ -12,6 +12,13 @@ class DetailsModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute('/',
         child: (_, args) => DetailsPage(
-            date: args.data['date'], dbIndex: args.data['dbIndex'] ?? "")),
+              date: args.data['date'],
+              dbIndex: args.data['dbIndex'],
+              explanation: args.data['explanation'],
+              title: args.data['title'],
+              url: args.data['url'],
+              mediaType: args.data['mediaType'],
+              isConnected: args.data['isConnected'] ?? "",
+            )),
   ];
 }

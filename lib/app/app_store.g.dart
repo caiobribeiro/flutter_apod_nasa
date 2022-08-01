@@ -9,6 +9,13 @@ part of 'app_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AppStore on AppStoreBase, Store {
+  Computed<bool>? _$isDarkComputed;
+
+  @override
+  bool get isDark => (_$isDarkComputed ??=
+          Computed<bool>(() => super.isDark, name: 'AppStoreBase.isDark'))
+      .value;
+
   late final _$listImageFilesAtom =
       Atom(name: 'AppStoreBase.listImageFiles', context: context);
 
@@ -29,15 +36,31 @@ mixin _$AppStore on AppStoreBase, Store {
       Atom(name: 'AppStoreBase.isConnected', context: context);
 
   @override
-  bool get isConnected {
+  bool? get isConnected {
     _$isConnectedAtom.reportRead();
     return super.isConnected;
   }
 
   @override
-  set isConnected(bool value) {
+  set isConnected(bool? value) {
     _$isConnectedAtom.reportWrite(value, super.isConnected, () {
       super.isConnected = value;
+    });
+  }
+
+  late final _$currentThemeAtom =
+      Atom(name: 'AppStoreBase.currentTheme', context: context);
+
+  @override
+  ThemeData get currentTheme {
+    _$currentThemeAtom.reportRead();
+    return super.currentTheme;
+  }
+
+  @override
+  set currentTheme(ThemeData value) {
+    _$currentThemeAtom.reportWrite(value, super.currentTheme, () {
+      super.currentTheme = value;
     });
   }
 
@@ -54,7 +77,7 @@ mixin _$AppStore on AppStoreBase, Store {
       AsyncAction('AppStoreBase.checkNetworkStatus', context: context);
 
   @override
-  Future checkNetworkStatus() {
+  Future<bool> checkNetworkStatus() {
     return _$checkNetworkStatusAsyncAction
         .run(() => super.checkNetworkStatus());
   }
@@ -84,6 +107,47 @@ mixin _$AppStore on AppStoreBase, Store {
         .run(() => super.downloadImageFile(apodListParsed));
   }
 
+  late final _$addApodListToHiveAsyncAction =
+      AsyncAction('AppStoreBase.addApodListToHive', context: context);
+
+  @override
+  Future<dynamic> addApodListToHive(
+      String? copyright,
+      DateTime? date,
+      String? explanation,
+      String? mediaType,
+      String? serviceVersion,
+      String? title,
+      String? url,
+      Uint8List? imageFile) {
+    return _$addApodListToHiveAsyncAction.run(() => super.addApodListToHive(
+        copyright,
+        date,
+        explanation,
+        mediaType,
+        serviceVersion,
+        title,
+        url,
+        imageFile));
+  }
+
+  late final _$saveThemePreferencesAsyncAction =
+      AsyncAction('AppStoreBase.saveThemePreferences', context: context);
+
+  @override
+  Future saveThemePreferences() {
+    return _$saveThemePreferencesAsyncAction
+        .run(() => super.saveThemePreferences());
+  }
+
+  late final _$loadThemeAsyncAction =
+      AsyncAction('AppStoreBase.loadTheme', context: context);
+
+  @override
+  Future<dynamic> loadTheme() {
+    return _$loadThemeAsyncAction.run(() => super.loadTheme());
+  }
+
   late final _$AppStoreBaseActionController =
       ActionController(name: 'AppStoreBase', context: context);
 
@@ -99,10 +163,23 @@ mixin _$AppStore on AppStoreBase, Store {
   }
 
   @override
+  dynamic changeTheme() {
+    final _$actionInfo = _$AppStoreBaseActionController.startAction(
+        name: 'AppStoreBase.changeTheme');
+    try {
+      return super.changeTheme();
+    } finally {
+      _$AppStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 listImageFiles: ${listImageFiles},
-isConnected: ${isConnected}
+isConnected: ${isConnected},
+currentTheme: ${currentTheme},
+isDark: ${isDark}
     ''';
   }
 }

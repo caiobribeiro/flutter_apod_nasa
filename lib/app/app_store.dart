@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_apod_nasa/app/theme/color_schemes.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'api_key/api_key.dart';
 import 'hive/boxes.dart';
 import 'models/nasa_apod_model.dart';
@@ -19,11 +22,11 @@ abstract class AppStoreBase with Store {
   List<Uint8List> listImageFiles = [];
 
   @observable
-  bool isConnected = true;
+  bool? isConnected;
 
   @action
   checkIfUpdateContetnt() async {
-    checkNetworkStatus();
+    await checkNetworkStatus();
     if (isConnected == true) {
       final box = Boxes.getNasaApodModel();
       var lastUpdated = box.values.toList().cast<NasaApodModel>();
@@ -44,11 +47,9 @@ abstract class AppStoreBase with Store {
   }
 
   @action
-  checkNetworkStatus() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      return isConnected = true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
+  Future<bool> checkNetworkStatus() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
       return isConnected = true;
     } else {
       return isConnected = false;
@@ -119,31 +120,88 @@ abstract class AppStoreBase with Store {
       );
     }
   }
+
+  @action
+  Future addApodListToHive(
+    String? copyright,
+    DateTime? date,
+    String? explanation,
+    String? mediaType,
+    String? serviceVersion,
+    String? title,
+    String? url,
+    Uint8List? imageFile,
+  ) async {
+    if (mediaType == 'image') {
+      final apod = NasaApodModel(
+        title: title,
+        copyright: copyright,
+        date: date,
+        explanation: explanation,
+        mediaType: mediaType,
+        serviceVersion: serviceVersion,
+        url: url,
+        imageFile: imageFile,
+      );
+      final box = Boxes.getNasaApodModel();
+      box.add(apod);
+    }
+  }
+
+  @observable
+  ThemeData currentTheme = MyTheme.light;
+
+  @computed
+  bool get isDark => currentTheme.brightness == Brightness.dark;
+
+  @action
+  changeTheme() {
+    if (isDark) {
+      currentTheme = MyTheme.light;
+    } else {
+      currentTheme = MyTheme.dark;
+    }
+    saveThemePreferences();
+  }
+
+  @action
+  saveThemePreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isDark', isDark);
+  }
+
+  @action
+  Future loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isDark = prefs.getBool('isDark') ?? false;
+    if (prefs.containsKey('isDark') && isDark) {
+      currentTheme = MyTheme.dark;
+    } else {
+      currentTheme = MyTheme.light;
+    }
+  }
 }
 
-@action
-Future addApodListToHive(
-  String? copyright,
-  DateTime? date,
-  String? explanation,
-  String? mediaType,
-  String? serviceVersion,
-  String? title,
-  String? url,
-  Uint8List? imageFile,
-) async {
-  if (mediaType == 'image') {
-    final apod = NasaApodModel(
-      title: title,
-      copyright: copyright,
-      date: date,
-      explanation: explanation,
-      mediaType: mediaType,
-      serviceVersion: serviceVersion,
-      url: url,
-      imageFile: imageFile,
+class MyTheme {
+  static final ThemeData light = _buildLightTheme();
+  static final ThemeData dark = _buildDarkTheme();
+
+  static ThemeData _buildLightTheme() {
+    final lightBase = ThemeData(
+      colorScheme: lightColorScheme,
+      brightness: Brightness.light,
+      useMaterial3: true,
     );
-    final box = Boxes.getNasaApodModel();
-    box.add(apod);
+    return lightBase;
+  }
+
+  // * Iniatilizing dark theme
+  static ThemeData _buildDarkTheme() {
+    final darkBase = ThemeData(
+      colorScheme: darkColorScheme,
+      brightness: Brightness.dark,
+      useMaterial3: true,
+    );
+    return darkBase;
   }
 }

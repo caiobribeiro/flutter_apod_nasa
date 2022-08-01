@@ -10,21 +10,29 @@ Developed in [Flutter]
 ## Features
 
 - Today`s Picture Home;
-- Search Picture by day;
+- Auto download of 10 days;
+- Offline mode;
 - Search Picture by period;
+- Dark theme, color palette powerd by [Material Theme Builder];
 - Details of the Picture.
+
+### Preview
+
+| Desktop | Mobile | Tablet |
+| ------ | ------ | ------ |
+| ![desktop_walkthrough](readme_assets\flutter_apod_nasa_oInmLRmGla.gif) | ![mobile_walkthrough](readme_assets\flutter_apod_nasa_6ikDp79gC3.gif) | ![tablet_walkthrough](readme_assets\flutter_apod_nasa_OSwM2J6hqe.gif) |
 
 ## Packages
 Packages from The official package repository for Dart and Flutter apps.
 
-- Modularized routes - [Modular];
-- Modularized Dependency Injection - [Modular];
+- Modularized routes and Modularized Dependency Injection - [Modular];
 - HTTP client -  [DIO];
 - State manager - [MobX];
 - Database - [Hive];
-- Get connection status - [Connectivity Plus];
+- Get connection status - [Internet Connection Checker];
 - Youtube player for video from [APOD] - [Youtube Player Flutter];
-- Save theme type - [Shared Preferences].
+- Save theme type - [Shared Preferences];
+- [Internet Connection Checker].
 
 
 
@@ -98,7 +106,8 @@ MIT
 [APOD]: <https://api.nasa.gov/>
 [MobX]: <https://pub.dev/packages/mobx/>
 [Hive]: <https://pub.dev/packages/hive/>
-[Connectivity Plus]: <https://pub.dev/packages/connectivity_plus/>
+[Internet Connection Checker]: <https://pub.dev/packages/internet_connection_checker/>
 [Youtube Player Flutter]: <https://pub.dev/packages/youtube_player_flutter/>
+[Material Theme Builder]: <https://m3.material.io/theme-builder#/dynamic/>
 
 
