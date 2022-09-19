@@ -21,8 +21,8 @@ class _SearchBarState extends State<SearchBar> {
   Future<void> _selectDate(BuildContext context) async {
     final picked = await showDateRangePicker(
       context: context,
-      firstDate: DateTime(DateTime.now().year - 5),
-      lastDate: DateTime(DateTime.now().year + 5),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
     );
     if (picked != null) {
       store.selectedStartDate = picked.start;

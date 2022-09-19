@@ -17,7 +17,6 @@ class _AppWidgetState extends State<AppWidget> {
   @override
   void initState() {
     store.loadTheme();
-    store.checkIfUpdateContetnt();
     super.initState();
   }
 

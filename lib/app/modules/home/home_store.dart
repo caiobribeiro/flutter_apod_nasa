@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
 import 'package:dio/dio.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
@@ -53,6 +52,13 @@ abstract class HomeStoreBase with Store {
             "&end_date=" +
             endDateParsed,
       );
+      print(
+        apiKey +
+            "&start_date=" +
+            startDateParsed +
+            "&end_date=" +
+            endDateParsed,
+      );
 
       final list = response.data as List;
       final apodListParsed =
@@ -60,28 +66,6 @@ abstract class HomeStoreBase with Store {
       return apodListParsed;
     } catch (e) {
       throw Exception(e);
-    }
-  }
-
-  @action
-  int daysBetweenDiference(DateTime from, DateTime to) {
-    from = DateTime(from.year, from.month, from.day);
-    to = DateTime(to.year, to.month, to.day);
-    return (to.difference(from).inHours / 24).round();
-  }
-
-  @observable
-  bool? isConnected;
-
-  @action
-  Future<bool> checkNetworkStatus() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result == true) {
-      isConnected = true;
-      return isConnected = true;
-    } else {
-      isConnected = false;
-      return isConnected = false;
     }
   }
 }

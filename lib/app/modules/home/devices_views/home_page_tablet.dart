@@ -3,10 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_apod_nasa/app/modules/home/home_store.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../../../hive/boxes.dart';
 import '../../../models/nasa_apod_model.dart';
-import '../../../widgets/apod_card_list_view_widget.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/glass_box_effect.dart';
 import '../../../widgets/media_widget.dart';
@@ -31,76 +28,47 @@ class _HomePageState extends State<HomePageTablet> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child:
-            // ONLINE
-            store.isConnected == true
-                ? FutureBuilder<NasaApodModel>(
-                    future: store.fetchNasaApodAPIWithDateParam(DateTime.now()),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Stack(
-                          children: [
-                            SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Media(
-                                    midiaType: snapshot.data!.mediaType!,
-                                    url: snapshot.data!.url!,
-                                    isConnected: true,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 200),
-                              child: GlassBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: SingleChildScrollView(
-                                  controller: ScrollController(),
-                                  child: Column(
-                                    children: const [
-                                      SearchBar(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  )
-                // OFFLINE
-                : ValueListenableBuilder<Box<NasaApodModel>>(
-                    valueListenable: Boxes.getNasaApodModel().listenable(),
-                    builder: ((context, box, _) {
-                      final nasaApodModelList =
-                          box.values.toList().cast<NasaApodModel>();
-                      return Stack(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder<NasaApodModel>(
+            future: store.fetchNasaApodAPIWithDateParam(DateTime.now()),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
                         children: [
                           Media(
-                            midiaType: nasaApodModelList[0].mediaType!,
-                            url: nasaApodModelList[0].url!,
-                            dbIndex: 0,
+                            midiaType: snapshot.data!.mediaType!,
+                            url: snapshot.data!.url!,
+                            isConnected: true,
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 200),
-                            child: GlassBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: ApodCardListViewWidget(),
-                            ),
-                          )
                         ],
-                      );
-                    }),
-                  ),
-      ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 200),
+                      child: GlassBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: SingleChildScrollView(
+                          controller: ScrollController(),
+                          child: Column(
+                            children: const [
+                              SearchBar(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          )),
     );
   }
 }

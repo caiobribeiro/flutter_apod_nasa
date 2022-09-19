@@ -32,74 +32,45 @@ class _HomePageState extends State<HomePageMobile> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child:
-            // ONLINE
-            store.isConnected == true
-                ? FutureBuilder<NasaApodModel>(
-                    future: store.fetchNasaApodAPIWithDateParam(DateTime.now()),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Stack(
-                          children: [
-                            Column(
-                              children: [
-                                Media(
-                                  midiaType: snapshot.data!.mediaType!,
-                                  url: snapshot.data!.url!,
-                                  isConnected: true,
-                                ),
-                              ],
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 200),
-                              child: GlassBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: SingleChildScrollView(
-                                  controller: ScrollController(),
-                                  child: Column(
-                                    children: const [
-                                      SearchBar(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  )
-                // OFFLINE
-                : ValueListenableBuilder<Box<NasaApodModel>>(
-                    valueListenable: Boxes.getNasaApodModel().listenable(),
-                    builder: ((context, box, _) {
-                      final nasaApodModelList =
-                          box.values.toList().cast<NasaApodModel>();
-                      return Stack(
-                        children: [
-                          Media(
-                            midiaType: nasaApodModelList[0].mediaType!,
-                            url: nasaApodModelList[0].url!,
-                            dbIndex: 0,
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder<NasaApodModel>(
+            future: store.fetchNasaApodAPIWithDateParam(DateTime.now()),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Media(
+                          midiaType: snapshot.data!.mediaType!,
+                          url: snapshot.data!.url!,
+                          isConnected: true,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 200),
+                      child: GlassBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: SingleChildScrollView(
+                          controller: ScrollController(),
+                          child: Column(
+                            children: const [
+                              SearchBar(),
+                            ],
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 200),
-                            child: GlassBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: ApodCardListViewWidget(),
-                            ),
-                          )
-                        ],
-                      );
-                    }),
-                  ),
-      ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          )),
     );
   }
 }

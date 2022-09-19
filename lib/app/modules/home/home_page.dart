@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_apod_nasa/app/modules/home/home_store.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../responsive/responsive_layout.dart';
@@ -23,18 +22,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: store.checkNetworkStatus(),
-      builder: ((context, snapshot) => Observer(builder: (_) {
-            if (snapshot.hasData) {
-              return const ResponsiveLayout(
-                mobileBody: HomePageMobile(),
-                tabletBody: HomePageTablet(),
-                desktopBody: HomePageDesktop(),
-              );
-            }
-            return const CircularProgressIndicator();
-          })),
+    return const ResponsiveLayout(
+      mobileBody: HomePageMobile(),
+      tabletBody: HomePageTablet(),
+      desktopBody: HomePageDesktop(),
     );
   }
 }

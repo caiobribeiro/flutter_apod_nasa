@@ -57,22 +57,6 @@ mixin _$HomeStore on HomeStoreBase, Store {
     });
   }
 
-  late final _$isConnectedAtom =
-      Atom(name: 'HomeStoreBase.isConnected', context: context);
-
-  @override
-  bool? get isConnected {
-    _$isConnectedAtom.reportRead();
-    return super.isConnected;
-  }
-
-  @override
-  set isConnected(bool? value) {
-    _$isConnectedAtom.reportWrite(value, super.isConnected, () {
-      super.isConnected = value;
-    });
-  }
-
   late final _$fetchNasaApodAPIWithDateParamAsyncAction = AsyncAction(
       'HomeStoreBase.fetchNasaApodAPIWithDateParam',
       context: context);
@@ -94,36 +78,12 @@ mixin _$HomeStore on HomeStoreBase, Store {
         () => super.fetchNasaApodAPIWithDateRangeParam(startDate, endDate));
   }
 
-  late final _$checkNetworkStatusAsyncAction =
-      AsyncAction('HomeStoreBase.checkNetworkStatus', context: context);
-
-  @override
-  Future<bool> checkNetworkStatus() {
-    return _$checkNetworkStatusAsyncAction
-        .run(() => super.checkNetworkStatus());
-  }
-
-  late final _$HomeStoreBaseActionController =
-      ActionController(name: 'HomeStoreBase', context: context);
-
-  @override
-  int daysBetweenDiference(DateTime from, DateTime to) {
-    final _$actionInfo = _$HomeStoreBaseActionController.startAction(
-        name: 'HomeStoreBase.daysBetweenDiference');
-    try {
-      return super.daysBetweenDiference(from, to);
-    } finally {
-      _$HomeStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
   @override
   String toString() {
     return '''
 selectedStartDate: ${selectedStartDate},
 selectedEndDate: ${selectedEndDate},
-serachDate: ${serachDate},
-isConnected: ${isConnected}
+serachDate: ${serachDate}
     ''';
   }
 }
